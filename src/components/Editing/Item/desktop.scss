@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+.Item {
+  display: flex;
+  justify-content: space-between;
+}
+.Item-item {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.pointer {
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    background-color: black;
+  }
+}
+
+.operation {
+  margin-left: 10px;
+  flex: 1 1 auto;
+}
+.price {
+  margin-right: 20px;
+}
+.material-icons {
+  font-size: 24px;
+  cursor: pointer;
+}
+.edit {
+  &:hover {
+    color: rgb(89, 89, 223);
+  }
+}
+
+.del {
+  font-size: 28px;
+  &:hover {
+    color: red;
+  }
+}
