@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useSelector, useDispatch } from "react-redux";
 import "./desktop.scss";
 import Item from "./Item/Item";
-const initForm = { operation: "", price: "" };
-const iniList = [
-  { id: uuidv4(), operation: "Замена масла", price: 4200 },
-  { id: uuidv4(), operation: "Подкачка шин", price: 1200 },
-  { id: uuidv4(), operation: "Замена масляного фильтра", price: 2200 },
-];
 
 export default function Editing() {
-  const [form, setForm] = useState(initForm);
-  const [list, setList] = useState(iniList);
+  const dispatch = useDispatch();
+  const list = useSelector((store) => store.listReducer.items);
+  const form = useSelector((store) => store.formReducer);
   const [editАFlag, setEditАFlag] = useState(false);
   const [idEditEl, setIdEditEl] = useState();
 
@@ -19,37 +14,29 @@ export default function Editing() {
   const handleChange = ({ target }) => {
     const name = target.name;
     const value = target.type === "checkbox" ? target.checked : target.value;
-    setForm((prevForm) => {
-      return { ...prevForm, [name]: value };
-    });
+    dispatch({ type: "CHANGE_FORM_VALUES", payload: { fild: name, value } });
   };
 
   /////
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editАFlag) {
-      setList((prev) => {
-        const arr = [...prev.filter((item) => item.id !== idEditEl)];
-        arr.push({
-          id: idEditEl,
-          operation: form.operation,
-          price: form.price,
-        });
-        return arr;
+      setEditАFlag(false);
+      dispatch({
+        type: "EDIT_ITEM",
+        payload: {
+          idItem: idEditEl,
+          itemEdit: { operation: form.operation, price: form.price },
+        },
       });
-      setForm(initForm);
+      dispatch({ type: "CHANGE_FORM_INIT" });
     } else {
       if (form.operation && form.price > 0) {
-        setList((prev) => {
-          const arr = [...prev];
-          arr.push({
-            id: uuidv4(),
-            operation: form.operation,
-            price: form.price,
-          });
-          return arr;
+        dispatch({
+          type: "ADD_ITEM",
+          payload: { operation: form.operation, price: form.price },
         });
-        setForm(initForm);
+        dispatch({ type: "CHANGE_FORM_INIT" });
       }
     }
   };
@@ -60,15 +47,23 @@ export default function Editing() {
     setIdEditEl(id);
     list.forEach((item) => {
       if (item.id === id) {
-        setForm({ operation: item.operation, price: item.price });
+        dispatch({
+          type: "CHANGE_FORM_VALUES",
+          payload: { fild: "operation", value: item.operation },
+        });
+        dispatch({
+          type: "CHANGE_FORM_VALUES",
+          payload: { fild: "price", value: item.price },
+        });
       }
     });
   };
 
   ////
   const handleDel = (id) => {
-    setList((prev) => {
-      return [...prev.filter((item) => item.id !== id)];
+    dispatch({
+      type: "DELETE_ITEM",
+      payload: id,
     });
   };
 
@@ -96,7 +91,7 @@ export default function Editing() {
           <span
             onClick={() => {
               setEditАFlag(false);
-              setForm(initForm);
+              dispatch({ type: "CHANGE_FORM_INIT" });
             }}
             className="form-item control"
             value="Cancel"
