@@ -18,6 +18,11 @@ const Item = ({ id, operation, price, handleEdit, handleDel }) => {
   );
 };
 
-Item.propTypes = {};
+Item.propTypes = {
+  id: PropTypes.string,
+  operation: PropTypes.string,
+  handleEdit: PropTypes.func,
+  handleDel: PropTypes.func,
+};
 
 export default Item;

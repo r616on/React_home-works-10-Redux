@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./desktop.scss";
 import Item from "./Item/Item";
 
 export default function Editing() {
   const dispatch = useDispatch();
-  const list = useSelector((store) => store.listReducer.items);
+  const { items, filtered, filterFlag } = useSelector(
+    (store) => store.listReducer
+  );
   const form = useSelector((store) => store.formReducer);
+  const { filter } = useSelector((store) => store.formReducer);
+
   const [editАFlag, setEditАFlag] = useState(false);
   const [idEditEl, setIdEditEl] = useState();
 
@@ -45,7 +49,7 @@ export default function Editing() {
   const handleEdit = (id) => {
     setEditАFlag(true);
     setIdEditEl(id);
-    list.forEach((item) => {
+    items.forEach((item) => {
       if (item.id === id) {
         dispatch({
           type: "CHANGE_FORM_VALUES",
@@ -66,6 +70,11 @@ export default function Editing() {
       payload: id,
     });
   };
+  ///
+  useEffect(() => {
+    dispatch({ type: "FILTER_ITEM", payload: filter });
+    // eslint-disable-next-line
+  }, [filter]);
 
   return (
     <div className="Editing">
@@ -99,21 +108,50 @@ export default function Editing() {
             Cancel
           </span>
         )}
+        <div className="Filter">
+          <label form="filter" className="lable-filter">
+            Фильтр задач
+          </label>
+          <input
+            id="filter"
+            className="form-item"
+            name="filter"
+            type="text"
+            value={form.filter}
+            onChange={handleChange}
+          />
+        </div>
       </form>
       <div className="Item-row">
-        {list.map((item) => {
-          const { id, operation, price } = item;
-          return (
-            <Item
-              key={id}
-              id={id}
-              operation={operation}
-              price={price}
-              handleEdit={handleEdit}
-              handleDel={handleDel}
-            />
-          );
-        })}
+        {!filterFlag &&
+          items.map((item) => {
+            const { id, operation, price } = item;
+            return (
+              <Item
+                key={id}
+                id={id}
+                operation={operation}
+                price={price}
+                handleEdit={handleEdit}
+                handleDel={handleDel}
+              />
+            );
+          })}
+
+        {filterFlag &&
+          filtered.map((item) => {
+            const { id, operation, price } = item;
+            return (
+              <Item
+                key={id}
+                id={id}
+                operation={operation}
+                price={price}
+                handleEdit={handleEdit}
+                handleDel={handleDel}
+              />
+            );
+          })}
       </div>
     </div>
   );

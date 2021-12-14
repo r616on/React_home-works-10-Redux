@@ -7,6 +7,7 @@
 .Editing-form-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .form-item {
   border: 1px solid black;
@@ -22,4 +23,15 @@
     background-color: darkgrey;
     color: white;
   }
+}
+.Filter {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+}
+.lable-filter {
+  margin-right: 20px;
 }

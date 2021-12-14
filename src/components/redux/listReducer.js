@@ -7,6 +7,8 @@ const initialState = {
     { id: uuidv4(), operation: "Замена масляного фильтра", price: 2200 },
   ],
   loading: "idel",
+  filterFlag: false,
+  filtered: [],
 };
 
 //action={type:"",payload:""}
@@ -29,6 +31,21 @@ export default function listReducer(state = initialState, action) {
           { ...itemEdit, id: idItem },
         ],
       };
+    case "FILTER_ITEM":
+      const filter = action.payload;
+      if (!filter) {
+        return { ...state, filterFlag: false };
+      } else {
+        return {
+          ...state,
+          filterFlag: true,
+          filtered: [
+            ...state.items.filter((o) => {
+              return o.operation.toLowerCase().startsWith(filter.toLowerCase());
+            }),
+          ],
+        };
+      }
 
     case "DELETE_ITEM":
       const id = action.payload;
