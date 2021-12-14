@@ -74,7 +74,7 @@ export default function Editing() {
   useEffect(() => {
     dispatch({ type: "FILTER_ITEM", payload: filter });
     // eslint-disable-next-line
-  }, [filter]);
+  }, [filter, items]);
 
   return (
     <div className="Editing">
